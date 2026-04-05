@@ -1,0 +1,163 @@
+#!/usr/bin/env python3
+import rclpy
+from rclpy.node import Node
+from std_msgs.msg import String
+from sensor_msgs.msg import JointState
+import placo
+import numpy as np
+from placo_utils.visualization import robot_viz, robot_frame_viz, frame_viz, points_viz
+from placo_utils.tf import tf
+
+class DogCommandNode(Node):
+    def _init_(self):
+        super()._init_('dog_command_node')
+
+        self.subscription = self.create_subscription(
+            String, '/dog_goal', self.goal_callback, 10      
+        )
+        self.pub = self.create_publisher(JointState, '/joint_targets', 10)
+
+        self.robot = placo.RobotWrapper(
+            "/home/aaravb/Downloads/urdf/robodog_urdf_visual/robodog_urdf_visual.urdf",
+            placo.Flags.ignore_collisions
+        )
+        self.solver = placo.KinematicsSolver(self.robot)
+        self.solver.mask_fbase(True)
+        self.solver.enable_velocity_limits(True)
+
+        self.robot.update_kinematics()
+
+        print("Joint names:", self.robot.joint_names())
+        for leg in ['LFfoot', 'RFfoot', 'LRfoot', 'RRfoot']:
+            T = self.robot.get_T_world_frame(leg)
+            print(f"{leg} position: {T[:3, 3]}")
+
+        self.step_length = 0.1
+        self.step_height = 0.1
+        self.gait_freq   = 0.5
+
+        self.leg_configs = {
+            'LFfoot': {
+                'x': 0.56791464,
+                'y_center': -1.2279557,
+                'z_center': 0.67243946,
+                'phase': 0.0,
+                'z_offset': -0.02,
+            },
+            'RRfoot': {
+                'x': 0.74281485,
+                'y_center': -1.52181324,
+                'z_center': 0.66312896,
+                'phase': 0.0,
+                'z_offset': -0.02,
+            },
+            'RFfoot': {
+                'x': 0.75971348,
+                'y_center': -1.26101703,
+                'z_center': 0.67581485,
+                'phase': np.pi,
+                'z_offset': -0.02,
+            },
+            'LRfoot': {
+                'x': 0.56492413,
+                'y_center': -1.53388919,
+                'z_center': 0.64826712,
+                'phase': np.pi,
+                'z_offset': -0.02,
+            },
+        }
+
+        self.effector_tasks = {}
+        for leg, cfg in self.leg_configs.items():
+            task = self.solver.add_position_task(
+                leg,
+                np.array([cfg['x'], cfg['y_center'], cfg['z_center']])
+            )
+            task.configure(leg, "soft", 5.0)
+            self.effector_tasks[leg] = task
+
+        self.viz = robot_viz(self.robot)
+        self.t = 0.0
+        self.dt = 0.01
+        self.solver.dt = self.dt
+        self.last_targets = []
+        self.last_target_t = 0.0
+        self.latest_joint_angles = [0.0] * 12
+
+        self.timer = self.create_timer(self.dt, self.loop)
+        self.get_logger().info('Dog Command Node started')
+
+    def loop(self):
+        self.t += self.dt
+
+        gait_t = self.t * self.gait_freq * 2 * np.pi
+
+        for leg, cfg in self.leg_configs.items():
+            phase = gait_t + cfg['phase']
+            t_mod = phase % (2 * np.pi)
+
+            in_swing = (t_mod < np.pi)
+            swing_progress = t_mod / np.pi
+
+            if in_swing:
+                y = cfg['y_center'] + self.step_length * (swing_progress - 0.5)
+                z = cfg['z_center'] + cfg['z_offset'] + self.step_height * np.sin(swing_progress * np.pi)
+            else:
+                stance_progress = (t_mod - np.pi) / np.pi
+                y = cfg['y_center'] + self.step_length * (0.5 - stance_progress)
+                z = cfg['z_center'] + cfg['z_offset']  # keep offset during stance too
+
+            self.effector_tasks[leg].target_world = np.array([cfg['x'], y, z])
+
+        self.solver.solve(True)
+        self.robot.update_kinematics()
+        self.viz.display(self.robot.state.q)
+
+        for leg in self.leg_configs:
+            robot_frame_viz(self.robot, leg)
+
+        if self.t - self.last_target_t > 0.1:
+            self.last_target_t = self.t
+            pos = self.effector_tasks['LFfoot'].target_world
+            self.last_targets.append(pos.tolist())
+            self.last_targets = self.last_targets[-50:]
+            points_viz("targets", self.last_targets, color=0xaaff00)
+
+        self.latest_joint_angles = [float(a) for a in self.robot.state.q[7:19]]
+        self.publish_joint_angles()
+
+        if int(self.t / self.dt) % 100 == 0:
+            shifted = [a + np.pi / 2 for a in self.latest_joint_angles]
+            self.get_logger().info(f'Joint targets (0 to pi): {shifted}')
+
+    def publish_joint_angles(self):
+        joint_msg = JointState()
+        joint_msg.header.stamp = self.get_clock().now().to_msg()
+        joint_msg.name = [
+            'LFshoulder1', 'LFshoulder', 'LFknee',
+            'LRshoulder1', 'LRshoulder', 'LRknee',
+            'RFshoulder1', 'RFshoulder', 'RFknee',
+            'RRshoulder1', 'RRshoulder', 'RRknee'
+        ]
+        # Shift from [-pi/2, pi/2] to [0, pi] by adding pi/2
+        shifted_angles = [a + np.pi / 2 for a in self.latest_joint_angles]
+        joint_msg.position = shifted_angles
+        self.pub.publish(joint_msg)
+
+    def goal_callback(self, msg):
+        try:
+            new_freq = float(msg.data)
+            self.gait_freq = new_freq
+            self.get_logger().info(f'Gait frequency updated to: {self.gait_freq} Hz')
+        except ValueError:
+            self.get_logger().warn(f'Invalid frequency value: "{msg.data}" — expected a number like "1.0"')
+
+def main(args=None):
+    rclpy.init(args=args)
+    node = DogCommandNode()
+    rclpy.spin(node)
+    node.destroy_node()
+    rclpy.shutdown()
+
+if _name_ == '_main_':
+    main()

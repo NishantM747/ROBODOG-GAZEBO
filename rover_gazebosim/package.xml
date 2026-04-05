@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
+<package format="3">
+  <name>rover_gazebosim</name>
+  <version>0.0.0</version>
+  <description>TODO: Package description</description>
+  <maintainer email="nishantmiglani123@gmail.com">nishant</maintainer>
+  <license>Apache-2.0</license>
+
+  <buildtool_depend>ament_python</buildtool_depend>
+
+  <!-- Core ROS 2 dependencies -->
+  <depend>rclpy</depend>
+  <depend>launch</depend>
+  <depend>launch_ros</depend>
+  
+  <!-- Robot description dependencies -->
+  <depend>robot_state_publisher</depend>
+  <depend>joint_state_publisher</depend>
+  <depend>xacro</depend>
+  
+  <!-- Gazebo dependencies -->
+  <depend>ros_gz_sim</depend>
+  <depend>ros_gz_bridge</depend>
+  
+  <!-- Python package index -->
+  <depend>ament_index_python</depend>
+
+  <export>
+    <!-- Change this to ament_python -->
+    <build_type>ament_python</build_type>
+  </export>
+</package>

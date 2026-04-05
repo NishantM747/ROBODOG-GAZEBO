@@ -1,0 +1,417 @@
+<robot name="robodog_urdf_visual">
+<link name="Body">
+<inertial>
+<origin xyz="0.656324638994413 -1.42809506690289 0.974685271162886" rpy="0 0 0"/>
+<mass value="2.47443646087766"/>
+<inertia ixx="0.0338051194285346" ixy="-9.98080509313333E-08" ixz="-3.26646966906258E-08" iyy="0.0188656734512259" iyz="-8.88031110999782E-05" izz="0.0514575753888566"/>
+</inertial>
+<visual>
+<origin xyz="0 0 0" rpy="0 0 0"/>
+<geometry>
+<mesh filename="package://meshes/Body.STL"/>
+</geometry>
+<material name="">
+<color rgba="0.796078431372549 0.823529411764706 0.937254901960784 1"/>
+</material>
+</visual>
+<collision>
+<origin xyz="0 0 0" rpy="0 0 0"/>
+<geometry>
+<mesh filename="package://meshes/Body.STL"/>
+</geometry>
+</collision>
+</link>
+<link name="LFshoulder">
+<inertial>
+<origin xyz="0.00681169722908104 0.00125033685953124 -0.0529994500001849" rpy="0 0 0"/>
+<mass value="0.106734606341006"/>
+<inertia ixx="5.17890853646485E-05" ixy="2.95186281800034E-06" ixz="-2.76364828743488E-06" iyy="3.88830335380834E-05" iyz="-2.55784140201913E-06" izz="4.69737140895314E-05"/>
+</inertial>
+<visual>
+<origin xyz="0 0 0" rpy="0 0 0"/>
+<geometry>
+<mesh filename="package://meshes/LFshoulder.STL"/>
+</geometry>
+<material name="">
+<color rgba="0.627450980392157 0.627450980392157 0.627450980392157 1"/>
+</material>
+</visual>
+<collision>
+<origin xyz="0 0 0" rpy="0 0 0"/>
+<geometry>
+<mesh filename="package://package://meshes/LFshoulder.STL"/>
+</geometry>
+</collision>
+</link>
+<joint name="LFshoulder1" type="revolute">
+<origin xyz="0.570945900830936 -1.35287827187371 0.934826982453758" rpy="1.5707963267949 0.0196982875803658 0"/>
+<parent link="Body"/>
+<child link="LFshoulder"/>
+<axis xyz="0 0 1"/>
+<!-- FIX 1: symmetric limits -->
+<limit lower="-1.57" upper="1.57" effort="100000" velocity="0.1"/>
+</joint>
+<link name="LFthigh">
+<inertial>
+<origin xyz="0.0254299226832908 -0.0560253459175278 -0.00159464940336007" rpy="0 0 0"/>
+<mass value="0.142585062370825"/>
+<inertia ixx="0.00032131875229863" ixy="-2.41938494626875E-06" ixz="-5.00179516698194E-08" iyy="3.38957629072241E-05" iyz="-7.67389200474168E-06" izz="0.000316306044817151"/>
+</inertial>
+<visual>
+<origin xyz="0 0 0" rpy="0 0 0"/>
+<geometry>
+<mesh filename="package://meshes/LFthigh.STL"/>
+</geometry>
+<material name="">
+<color rgba="0.792156862745098 0.819607843137255 0.933333333333333 1"/>
+</material>
+</visual>
+<collision>
+<origin xyz="0 0 0" rpy="0 0 0"/>
+<geometry>
+<mesh filename="package://meshes/LFthigh.STL"/>
+</geometry>
+</collision>
+</link>
+<joint name="LFhip" type="revolute">
+<origin xyz="-0.0301327356696895 -0.027433002683567 -0.054419879145494" rpy="-0.299813417529854 0 0"/>
+<parent link="LFshoulder"/>
+<child link="LFthigh"/>
+<axis xyz="1 0 0"/>
+<!-- FIX 1: symmetric limits -->
+<limit lower="-1.57" upper="1.57" effort="100000" velocity="0.1"/>
+</joint>
+<link name="LFcalf">
+<inertial>
+<origin xyz="0.0377851499737359 -0.0771360287758094 1.70801450760649E-09" rpy="0 0 0"/>
+<mass value="0.220129873044525"/>
+<inertia ixx="0.000500333417247401" ixy="-2.71815321277086E-06" ixz="-3.59989002583078E-21" iyy="5.59989224180159E-05" iyz="9.84252284709497E-19" izz="0.000499436637090327"/>
+</inertial>
+<visual>
+<origin xyz="0 0 0" rpy="0 0 0"/>
+<geometry>
+<mesh filename="package://meshes/LFcalf.STL"/>
+</geometry>
+<material name="">
+<color rgba="0.792156862745098 0.819607843137255 0.933333333333333 1"/>
+</material>
+</visual>
+<collision>
+<origin xyz="0 0 0" rpy="0 0 0"/>
+<geometry>
+<mesh filename="package://meshes/LFcalf.STL"/>
+</geometry>
+</collision>
+</link>
+<joint name="LFknee" type="revolute">
+<origin xyz="-0.00980170853731022 -0.134770482280563 -0.00414664095535988" rpy="1.09162844050236 -0.0122810329987683 0.0063804086168105"/>
+<parent link="LFthigh"/>
+<child link="LFcalf"/>
+<axis xyz="0.999904235859026 -0.0138390430007545 0"/>
+<!-- FIX 1: symmetric limits -->
+<limit lower="0" upper="1.57" effort="100000" velocity="0.1"/>
+</joint>
+<!-- ==================== LR LEG ==================== -->
+<link name="LRshoulder">
+<inertial>
+<origin xyz="0.00697922831782827 0.00120544876893769 -0.0530044716500169" rpy="0 0 0"/>
+<mass value="0.107113260088673"/>
+<inertia ixx="5.18183845782671E-05" ixy="2.90746990008399E-06" ixz="-2.76364856021151E-06" iyy="3.90281777796418E-05" iyz="-2.5578413861735E-06" izz="4.71229135190175E-05"/>
+</inertial>
+<visual>
+<origin xyz="0 0 0" rpy="0 0 0"/>
+<geometry>
+<mesh filename="package://meshes/LRshoulder.STL"/>
+</geometry>
+<material name="">
+<color rgba="0.627450980392157 0.627450980392157 0.627450980392157 1"/>
+</material>
+</visual>
+<collision>
+<origin xyz="0 0 0" rpy="0 0 0"/>
+<geometry>
+<mesh filename="package://meshes/LRshoulder.STL"/>
+</geometry>
+</collision>
+</link>
+<joint name="LRshoulder1" type="revolute">
+<origin xyz="0.570945900830937 -1.60267827187371 0.935026982453744" rpy="1.5707963267949 0.0400174430414714 0"/>
+<parent link="Body"/>
+<child link="LRshoulder"/>
+<axis xyz="0 0 1"/>
+<!-- FIX 1: symmetric limits -->
+<limit lower="-1.57" upper="1.57" effort="100000" velocity="0.1"/>
+</joint>
+<link name="LRthigh">
+<inertial>
+<origin xyz="0.025448577797899 -0.0560272165605814 0.00117650081112397" rpy="0 0 0"/>
+<mass value="0.142585062512309"/>
+<inertia ixx="0.000321320133122269" ixy="-2.30677332961993E-06" ixz="1.52827116373056E-08" iyy="3.39181273948411E-05" iyz="8.1075016562492E-06" izz="0.000316282299953722"/>
+</inertial>
+<visual>
+<origin xyz="0 0 0" rpy="0 0 0"/>
+<geometry>
+<mesh filename="package://meshes/LRthigh.STL"/>
+</geometry>
+<material name="">
+<color rgba="0.792156862745098 0.819607843137255 0.933333333333333 1"/>
+</material>
+</visual>
+<collision>
+<origin xyz="0 0 0" rpy="0 0 0"/>
+<geometry>
+<mesh filename="package://meshes/LRthigh.STL"/>
+</geometry>
+</collision>
+</link>
+<joint name="LRhip" type="revolute">
+<origin xyz="-0.0301327356696457 -0.0274330026834846 -0.0544198791454946" rpy="-0.35188052704573 -0.012952543057539 0.00475550062410753"/>
+<parent link="LRshoulder"/>
+<child link="LRthigh"/>
+<axis xyz="0.999904810563637 0 -0.0137974567111755"/>
+<!-- FIX 1: symmetric limits -->
+<limit lower="-1.57" upper="1.57" effort="100000" velocity="0.1"/>
+</joint>
+<link name="LRcalf">
+<inertial>
+<origin xyz="0.0360577557209741 -0.0779584626053882 4.08413969310573E-10" rpy="0 0 0"/>
+<mass value="0.220129873044525"/>
+<inertia ixx="0.000499991946951532" ixy="-1.26094720880383E-05" ixz="3.19754937588498E-20" iyy="5.63403927138841E-05" iyz="2.23616698075135E-19" izz="0.000499436637090327"/>
+</inertial>
+<visual>
+<origin xyz="0 0 0" rpy="0 0 0"/>
+<geometry>
+<mesh filename="package://meshes/LRcalf.STL"/>
+</geometry>
+<material name="">
+<color rgba="0.792156862745098 0.819607843137255 0.933333333333333 1"/>
+</material>
+</visual>
+<collision>
+<origin xyz="0 0 0" rpy="0 0 0"/>
+<geometry>
+<mesh filename="package://meshes/LRcalf.STL"/>
+</geometry>
+</collision>
+</link>
+<joint name="LRknee" type="revolute">
+<origin xyz="-0.00975435685953308 -0.134792281203354 0.003499209275174" rpy="0.797443610135705 -0.0120453146509253 0.0252265315134874"/>
+<parent link="LRthigh"/>
+<child link="LRcalf"/>
+<axis xyz="0.999347964148459 -0.0361060459248811 0"/>
+<!-- FIX 1: symmetric limits -->
+<limit lower="0" upper="1.57" effort="100000" velocity="0.1"/>
+</joint>
+<!-- ==================== RF LEG ==================== -->
+<link name="RFshoulder">
+<inertial>
+<origin xyz="-0.0069792232149215 0.00120545927671156 -0.0530044835151915" rpy="0 0 0"/>
+<mass value="0.107113316590436"/>
+<inertia ixx="5.18183962454629E-05" ixy="-2.90747124297496E-06" ixz="2.76365354538931E-06" iyy="3.90281899527752E-05" iyz="-2.5578377303906E-06" izz="4.71229170668772E-05"/>
+</inertial>
+<visual>
+<origin xyz="0 0 0" rpy="0 0 0"/>
+<geometry>
+<mesh filename="package://meshes/RFshoulder.STL"/>
+</geometry>
+<material name="">
+<color rgba="0.627450980392157 0.627450980392157 0.627450980392157 1"/>
+</material>
+</visual>
+<collision>
+<origin xyz="0 0 0" rpy="0 0 0"/>
+<geometry>
+<mesh filename="package://meshes/RFshoulder.STL"/>
+</geometry>
+</collision>
+</link>
+<joint name="RFshoulder1" type="revolute">
+<origin xyz="0.741284184425223 -1.35287827187371 0.935826981513804" rpy="1.5707963267949 -0.116458893368777 0"/>
+<parent link="Body"/>
+<child link="RFshoulder"/>
+<axis xyz="0 0 1"/>
+<!-- FIX 1: symmetric limits -->
+<limit lower="-1.57" upper="1.57" effort="100000" velocity="0.1"/>
+</joint>
+<link name="RFthigh">
+<inertial>
+<origin xyz="-0.0254299225488506 -0.0560253487071269 -0.00159464974084234" rpy="0 0 0"/>
+<mass value="0.14258506807021"/>
+<inertia ixx="0.000321318786317582" ixy="2.41938856259475E-06" ixz="5.0018727702744E-08" iyy="3.38957611151945E-05" iyz="-7.67389491245136E-06" izz="0.000316306080101547"/>
+</inertial>
+<visual>
+<origin xyz="0 0 0" rpy="0 0 0"/>
+<geometry>
+<mesh filename="package://meshes/RFthigh.STL"/>
+</geometry>
+<material name="">
+<color rgba="0.792156862745098 0.819607843137255 0.933333333333333 1"/>
+</material>
+</visual>
+<collision>
+<origin xyz="0 0 0" rpy="0 0 0"/>
+<geometry>
+<mesh filename="package://meshes/RFthigh.STL"/>
+</geometry>
+</collision>
+</link>
+<joint name="RFhip" type="revolute">
+<origin xyz="0.0301327362857767 -0.0274330018035406 -0.0544198791458379" rpy="-0.532538206681912 0 0"/>
+<parent link="RFshoulder"/>
+<child link="RFthigh"/>
+<!-- FIX 3: axis matches LF/LR (was -1 0 0) -->
+<axis xyz="1 0 0"/>
+<!-- FIX 1: symmetric limits -->
+<limit lower="-1.57" upper="1.57" effort="100000" velocity="0.1"/>
+</joint>
+<link name="RFcalf">
+<inertial>
+<origin xyz="0.0456389236696949 -0.072926852139616 5.40545386229496E-12" rpy="0 0 0"/>
+<mass value="0.220129873044526"/>
+<inertia ixx="0.000497582548247098" ixy="3.4958933968641E-05" ixz="3.72694496791892E-20" iyy="5.87497914183215E-05" iyz="-2.35475159336695E-19" izz="0.00049943663709033"/>
+</inertial>
+<visual>
+<origin xyz="0 0 0" rpy="0 0 0"/>
+<geometry>
+<mesh filename="package://meshes/RFcalf.STL"/>
+</geometry>
+<material name="">
+<color rgba="0.792156862745098 0.819607843137255 0.933333333333333 1"/>
+</material>
+</visual>
+<collision>
+<origin xyz="0 0 0" rpy="0 0 0"/>
+<geometry>
+<mesh filename="package://meshes/RFcalf.STL"/>
+</geometry>
+</collision>
+</link>
+<joint name="RFknee" type="revolute">
+<origin xyz="-0.0688982914538071 -0.135741088974873 -0.00470154873322026" rpy="1.2644864677079 0.0827040505719773 -0.0261205230150006"/>
+<parent link="RFthigh"/>
+<child link="RFcalf"/>
+<axis xyz="0.996242013440497 0.0866132244869372 0"/>
+<!-- FIX 1: symmetric limits -->
+<limit lower="0" upper="1.57" effort="100000" velocity="0.1"/>
+</joint>
+<!-- ==================== RR LEG ==================== -->
+<link name="RRshoulder">
+<inertial>
+<origin xyz="-0.00697921190467143 0.00120482955155443 -0.0530044835509087" rpy="0 0 0"/>
+<mass value="0.107113316314874"/>
+<inertia ixx="5.18183961988968E-05" ixy="-2.9074713425353E-06" ixz="2.76365331101969E-06" iyy="3.90281896411856E-05" iyz="-2.55783770855946E-06" izz="4.71229166596488E-05"/>
+</inertial>
+<visual>
+<origin xyz="0 0 0" rpy="0 0 0"/>
+<geometry>
+<mesh filename="package://meshes/RRshoulder.STL"/>
+</geometry>
+<material name="">
+<color rgba="0.627450980392157 0.627450980392157 0.627450980392157 1"/>
+</material>
+</visual>
+<collision>
+<origin xyz="0 0 0" rpy="0 0 0"/>
+<geometry>
+<mesh filename="package://meshes/RRshoulder.STL"/>
+</geometry>
+</collision>
+</link>
+<joint name="RRshoulder1" type="revolute">
+<origin xyz="0.741284184940541 -1.60267827187374 0.935826982453767" rpy="1.5707963267949 -0.0019797424334105 0"/>
+<parent link="Body"/>
+<child link="RRshoulder"/>
+<axis xyz="0 0 1"/>
+<!-- FIX 1: symmetric limits -->
+<limit lower="-1.57" upper="1.57" effort="100000" velocity="0.1"/>
+</joint>
+<link name="RRthigh">
+<inertial>
+<origin xyz="-0.0254299227848083 -0.0560253474323369 -0.0015946498201842" rpy="0 0 0"/>
+<mass value="0.142585067571199"/>
+<inertia ixx="0.000321318785253325" ixy="2.41938748456796E-06" ixz="5.00187418284509E-08" iyy="3.38957605966384E-05" iyz="-7.67389502238405E-06" izz="0.000316306078517343"/>
+</inertial>
+<visual>
+<origin xyz="0 0 0" rpy="0 0 0"/>
+<geometry>
+<mesh filename="package://meshes/RRthigh.STL"/>
+</geometry>
+<material name="">
+<color rgba="0.792156862745098 0.819607843137255 0.933333333333333 1"/>
+</material>
+</visual>
+<collision>
+<origin xyz="0 0 0" rpy="0 0 0"/>
+<geometry>
+<mesh filename="package://meshes/RRthigh.STL"/>
+</geometry>
+</collision>
+</link>
+<joint name="RRhip" type="revolute">
+<origin xyz="0.0301327477149707 -0.0274336317901348 -0.0544198793939654" rpy="-0.487004042275192 0 0"/>
+<parent link="RRshoulder"/>
+<child link="RRthigh"/>
+<!-- FIX 3: axis matches LF/LR (was -1 0 0) -->
+<axis xyz="1 0 0"/>
+<!-- FIX 1: symmetric limits -->
+<limit lower="-1.57" upper="1.57" effort="100000" velocity="0.1"/>
+</joint>
+<link name="RRcalf">
+<inertial>
+<origin xyz="0.0392753470832037 -0.076542042229081 1.01296748766799E-12" rpy="0 0 0"/>
+<mass value="0.220129873044525"/>
+<inertia ixx="0.000500333518865319" ixy="-2.70983477952626E-06" ixz="-1.20172799391704E-20" iyy="5.59988208000997E-05" iyz="6.43745039913268E-20" izz="0.000499436637090329"/>
+</inertial>
+<visual>
+<origin xyz="0 0 0" rpy="0 0 0"/>
+<geometry>
+<mesh filename="package://meshes/RRcalf.STL"/>
+</geometry>
+<material name="">
+<color rgba="0.792156862745098 0.819607843137255 0.933333333333333 1"/>
+</material>
+</visual>
+<collision>
+<origin xyz="0 0 0" rpy="0 0 0"/>
+<geometry>
+<mesh filename="package://meshes/RRcalf.STL"/>
+</geometry>
+</collision>
+</link>
+<joint name="RRknee" type="revolute">
+<origin xyz="-0.0688982915173117 -0.135741089101065 -0.00470154847425786" rpy="1.09576138654391 0.00144427473534236 -0.000742813636079913"/>
+<parent link="RRthigh"/>
+<child link="RRcalf"/>
+<!--
+ FIX 2: axis matches others (was -0.999998681 -0.00162 0) 
+-->
+<axis xyz="0.999998681146719 0.00162410123492629 0"/>
+<!-- FIX 1: symmetric limits -->
+<limit lower="0" upper="1.57" effort="100000" velocity="0.1"/>
+</joint>
+<!-- Dummy foot links -->
+<link name="LFfoot"/>
+<link name="LRfoot"/>
+<link name="RFfoot"/>
+<link name="RRfoot"/>
+<joint name="LFankle" type="fixed">
+<parent link="LFcalf"/>
+<child link="LFfoot"/>
+<origin xyz="0.04 -0.15 0" rpy="0 0 0"/>
+</joint>
+<joint name="LRankle" type="fixed">
+<parent link="LRcalf"/>
+<child link="LRfoot"/>
+<origin xyz="0.04 -0.15 0" rpy="0 0 0"/>
+</joint>
+<joint name="RFankle" type="fixed">
+<parent link="RFcalf"/>
+<child link="RFfoot"/>
+<origin xyz="0.04 -0.15 0" rpy="0 0 0"/>
+</joint>
+<joint name="RRankle" type="fixed">
+<parent link="RRcalf"/>
+<child link="RRfoot"/>
+<origin xyz="0.04 -0.15 0" rpy="0 0 0"/>
+</joint>
+</robot>
